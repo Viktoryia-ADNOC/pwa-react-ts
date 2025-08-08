@@ -1,26 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+const App: React.FC = () => {
+  const showNotification = async () => {
+    if (!('Notification' in window)) {
+      console.error('This browser does not support notifications.');
+      return;
+    }
+
+    // Request permission if not already granted or denied
+    if (Notification.permission === 'default') {
+      await Notification.requestPermission();
+    }
+
+    // Show notification if permission is granted
+    if (Notification.permission === 'granted') {
+      new Notification('Hello!', {
+        body: 'This is a browser notification.',
+        icon: '/logo192.png',
+      });
+    } else {
+      console.error('Notifications are blocked or denied.');
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Browser Notifications</h1>
+      <button onClick={showNotification}>Show Notification</button>
     </div>
   );
-}
+};
 
 export default App;
