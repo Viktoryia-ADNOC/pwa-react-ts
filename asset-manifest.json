@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/pwa-react-ts/static/css/main.e6c13ad2.css",
+    "main.js": "/pwa-react-ts/static/js/main.38b82e68.js",
+    "index.html": "/pwa-react-ts/index.html",
+    "main.e6c13ad2.css.map": "/pwa-react-ts/static/css/main.e6c13ad2.css.map",
+    "main.38b82e68.js.map": "/pwa-react-ts/static/js/main.38b82e68.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.38b82e68.js"
+  ]
+}
