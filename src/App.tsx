@@ -23,10 +23,29 @@ const App: React.FC = () => {
     }
   };
 
+  const handleNotification = () => {
+    if ('Notification' in window) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          setTimeout(() => {
+            new Notification('Reminder', {
+              body: 'This is your notification after 1 minute!',
+            });
+          }, 60000); // 1 minute = 60000 ms
+        } else {
+          console.error('Notification permission denied');
+        }
+      });
+    } else {
+      console.error('Notifications are not supported in this browser');
+    }
+  };
+
   return (
     <div>
       <h1>Browser Notifications</h1>
       <button onClick={showNotification}>Show Notification</button>
+      <button onClick={handleNotification}>Show Notification in 1 Minute</button>
     </div>
   );
 };
