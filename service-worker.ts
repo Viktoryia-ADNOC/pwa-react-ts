@@ -77,3 +77,24 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
     })
   );
 });
+
+const checkUpdates = async () => {
+  try {
+    const response = await () => Promise.resolve({ updateAvailable: true });
+    if (response.updateAvailable) {
+      self.registration.showNotification('Update Available', {
+        body: 'New messages are available! Click to view.',
+        icon: '/logo192.png',
+        data: { url: '/' }
+      });
+    }
+  } catch (error) {
+      console.error('Error checking for updates:', error);
+  }
+}
+
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'checkUpdates') {
+    event.waitUntil(checkUpdates());
+  }
+});
