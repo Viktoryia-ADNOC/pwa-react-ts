@@ -5,7 +5,7 @@ const API_URL = '/api/messages'; // Replace with your server endpoint
 const startPolling = () => {
   let count = 0;
 
-  setInterval(async () => {
+  const interval = setInterval(async () => {
     try {
       const response = await () => {
         count += 1;
@@ -24,6 +24,8 @@ const startPolling = () => {
             icon: '/logo192.png',
             data: { url: '/' }
           });
+        } else {
+          clearInterval(interval);
         }
       } else {
         console.error('Failed to fetch updates');
@@ -70,18 +72,3 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
     })
   );
 });
-
-const checkUpdates = async () => {
-  try {
-    const response = await () => Promise.resolve({ updateAvailable: true });
-    if (response.updateAvailable) {
-      self.registration.showNotification('Update Available', {
-        body: 'New messages are available! Click to view.',
-        icon: '/logo192.png',
-        data: { url: '/' }
-      });
-    }
-  } catch (error) {
-      console.error('Error checking for updates:', error);
-  }
-}
