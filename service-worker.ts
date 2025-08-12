@@ -1,49 +1,42 @@
-const CHECK_MESSAGES_INTERVAL = 30000; // Check every 30 seconds
-const MESSAGES_API_URL = '/api/messages'; // Replace with your server endpoint
+const POLLING_INTERVAL = 30000; // Check every 30 seconds
+const API_URL = '/api/messages'; // Replace with your server endpoint
 
-// Mock fetch to resolve in one minute
-const mockFetch = (url: string) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (url === MESSAGES_API_URL) {
-        resolve({
-          ok: true,
-          json: async () => ({
-            newMessage: true,
-            title: 'Delayed Message',
-            body: 'This message was delayed by one minute.',
-            url: '/delayed-message',
-          }),
-        });
-      }
-    }, 60000); // 1 minute delay
-  });
-};
+// Polling mechanism
+const startPolling = () => {
+  let count = 0;
 
-// Periodically check for new messages
-self.addEventListener('install', () => {
-  self.skipWaiting();
   setInterval(async () => {
     try {
-      const response = await mockFetch(MESSAGES_API_URL);
+      const response = await () => {
+        count += 1;
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ newUpdate: true })
+        });
+      };
       if (response.ok) {
         const data = await response.json();
-        if (data.newMessage) {
-          const title = data.title || 'New Message';
-          const options = {
-            body: data.body || 'You have a new message!',
-            icon: '/logo192.png', // Path to your custom icon
-            data: {
-              url: data.url || '/', // URL to navigate to on click
-            },
-          };
-          self.registration.showNotification(title, options);
+
+        // Check condition from polling data
+        if (data.newUpdate && count < 6) {
+          self.registration.showNotification('Update Available', {
+            body: 'A new update is available. Click to view!',
+            icon: '/logo192.png',
+            data: { url: '/' }
+          });
         }
+      } else {
+        console.error('Failed to fetch updates');
       }
     } catch (error) {
-      console.error('Error checking for new messages:', error);
+      console.error('Error during polling:', error);
     }
-  }, CHECK_MESSAGES_INTERVAL);
+  }, POLLING_INTERVAL);
+};
+
+// Start polling when the service worker is activated
+self.addEventListener('activate', (event) => {
+  event.waitUntil(startPolling());
 });
 
 self.addEventListener('push', (event: PushEvent) => {
@@ -92,9 +85,3 @@ const checkUpdates = async () => {
       console.error('Error checking for updates:', error);
   }
 }
-
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'checkUpdates') {
-    event.waitUntil(checkUpdates());
-  }
-});

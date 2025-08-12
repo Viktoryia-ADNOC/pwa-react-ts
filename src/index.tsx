@@ -15,5 +15,3 @@ root.render(
 
 // Register the service worker
 serviceWorkerRegistration.register();
-
-serviceWorkerRegistration.registerPeriodicNewsCheck();
