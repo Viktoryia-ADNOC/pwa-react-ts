@@ -72,3 +72,7 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
     })
   );
 });
+
+self.addEventListener('fetch', (event) => {
+  return;
+});
